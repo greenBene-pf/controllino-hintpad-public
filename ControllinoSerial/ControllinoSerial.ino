@@ -26,11 +26,15 @@
 
 #include <Controllino.h>
 
+
+// ****************************** //
 // set up Controllino model here:
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
 #define CMODL 1
+// ****************************** //
+
 
 #if CMODL == 1
 // MINI

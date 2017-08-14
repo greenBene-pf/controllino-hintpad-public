@@ -97,7 +97,7 @@ void listenSerial() {
         }
 
         // also go through outputD even if we already have found a relay
-        // ~~> on the mini D and R pins are the same
+        // ~~> on the MINI, D and R pins are the same
         for (int j = 0; j < iocount1; j++) {
           if (outputD[j] == outputPin) {
             outputType = 1; // it's a digital pin!
@@ -114,14 +114,15 @@ void listenSerial() {
 }
 
 void listenPins () {
-  // listen for GPI on A0 - A9 and send event string via serial
+  // listen for inputs on A0 - AX and send event string via serial
   for (int i = 0; i < iocount2; i++) {
 
     inputVal[i] = digitalRead(inputA[i]);
     String serString;
 
     // ANALOG INPUT MAPPING
-    // when using MINI, read A4 and A5 (analog only!) and map them to digital HIGH/LOW values
+    // when using MINI, read A4 and A5 (analog only!) again 
+    // and convert them to digital HIGH/LOW values, using a threshold
     if (CMODL == 1) {
       if  (i >= 4) {
         int aInput  = analogRead (inputA[i]) ; // temporarily store the analog input value
