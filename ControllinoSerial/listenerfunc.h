@@ -8,14 +8,14 @@
 #include <Arduino.h>
 
 boolean newData = false;
-int sArduPin, sPinValue, sPinDuration; // stores incoming integers from serial connection
-int inMessage [] = { 0 , 0 , 0 };
-char receivedChars[32];
+int sArduPin, sPinValue, sPinDuration;  // stores incoming integers from serial connection
+char receivedChars[32];                 // stores the whole message coming from Hintpad
+int inMessage [] = { 0 , 0 , 0 };       // stores single values of a message coming from Hintpad
 String sendStrg;
 
-int long debounceMS [16]; //
+int long debounceMS [16]; // stores the current millis()-values for each input
 int doDebounce [16]; // button input debounce flags
-int debounceTime = 50;
+int debounceTime = 50; // in ms
 
 int btnCounter = 0;
 

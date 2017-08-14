@@ -97,6 +97,5 @@ void setup() {
 void loop() {
   listenSerial(); // listen for serial message
   listenPins();
-  //  t.update(); // update timer (if needed)
 }
 
