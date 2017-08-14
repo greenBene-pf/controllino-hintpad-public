@@ -59,7 +59,7 @@ void clearData () {
 }
 
 void listenSerial() {
-  static boolean recvInProgress = false;
+  static boolean recvInProgress = false; // used to ignore inputs without start and end markers
   static byte ndx = 0;
   char startMarker = '<';
   char endMarker = '>';
@@ -85,7 +85,6 @@ void listenSerial() {
         int outputPin = inMessage[0];
         int outputType = 0; // 0=None[default], 1=Digital, 2=Relay
         int newValue = inMessage[1];
-        // int durms = inMessage[2]; // unused, because we don't have enough timers for all the pins :(
         int posInArray;
 
         // try to find the pin in the relay pin list
@@ -104,7 +103,7 @@ void listenSerial() {
             posInArray = j;
           }
         }
-        turnDR ( outputPin, newValue, outputType, posInArray );
+        turnDR ( outputPin, newValue, outputType, posInArray ); // see swfunc.h 
         clearData (); // we're done
       }
     } else if (rc == startMarker) {
