@@ -1,5 +1,5 @@
-# controllino-serial
-general Controllino MINI/MAXI/MEGA sketch for Hintpad-I/O via serial com port
+# controllino-hintpad
+Controllino MINI/MAXI/MEGA sketch for Hintpad-I/O via serial com (USB) port
 
 ## Setup
 - Install Arduino IDE https://www.arduino.cc/en/main/software 
