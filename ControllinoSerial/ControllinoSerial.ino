@@ -24,8 +24,9 @@
   [pin, value]
 */
 
-#include <Controllino.h>
+String currentVersion = "1.0";
 
+#include <Controllino.h>
 
 // ****************************** //
 // set up Controllino model here:
@@ -34,7 +35,6 @@
 // 3 = MEGA
 #define CMODL 1
 // ****************************** //
-
 
 #if CMODL == 1
 // MINI
@@ -84,7 +84,11 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port
   }
-  Serial.println("CONTROLLINO SERIAL READY....");
+
+  Serial.println("CONTROLLINO SERIAL READY!");
+  Serial.println ("Ver. " + currentVersion);
+  Serial.println ("Built on " __DATE__ " at " __TIME__);
+  
   for (int i = 0; i < iocount2; i++) {
     pinMode (inputA[i], INPUT);
     pinMode (outputR[i], OUTPUT);
