@@ -1,22 +1,13 @@
 /*
-
    Serial and pin listener functions
    debounces button/trigger inputs
-
 */
-
 #include <Arduino.h>
-
 boolean newData = false;
 int sArduPin, sPinValue, sPinDuration;  // stores incoming integers from serial connection
 char receivedChars[32];                 // stores the whole message coming from Hintpad
 int inMessage [] = { 0 , 0 , 0 };       // stores single values of a message coming from Hintpad
 String sendStrg;
-
-int long debounceMS [16]; // stores the current millis()-values for each input
-int doDebounce [16]; // button input debounce flags
-int debounceTime = 50; // in ms
-
 int btnCounter = 0;
 
 void showParsedData() {
@@ -39,10 +30,9 @@ void parseData (int *theMessage) {
     // on the MINI, digital outputs D6 and D7 are mapped to A4 and A5
     // i.e. if you want to turn on D6 you have to digitalWrite (A4, HIGH);
     // Hinpad already sends A4,A5 to switch D6,D7 but we cannot convert string to constant name
-    // so we need to re-map here
+    // so we need to re-map the string here:
     (tmpStrtok == "A4") ? sArduPin = A4 : sArduPin = A5;
   }
-
   strtokIndx = strtok(NULL, ",");   // continue...
   sPinValue = atoi(strtokIndx);
   strtokIndx = strtok(NULL, ",");
@@ -58,13 +48,25 @@ void clearData () {
     receivedChars[i] = (char)0;
 }
 
+void checkKeypadWinning() {
+  boolean hasWon = true; //assume player has won
+  for (int k = 0; k <= 6; k++) {
+    if (keypadInput[k] != keypadSolution[k]) {
+      hasWon = false;
+    }
+  }
+  if (hasWon) {
+    Serial.println("WON!");
+    digitalWrite (keypadWinPin, HIGH);
+  }
+}
+
 void listenSerial() {
   static boolean recvInProgress = false; // used to ignore inputs without start and end markers
   static byte ndx = 0;
   char startMarker = '<';
   char endMarker = '>';
   char rc;
-
   while (Serial.available() > 0 && newData == false) {
     rc = Serial.read();
     if (recvInProgress == true) {
@@ -103,7 +105,7 @@ void listenSerial() {
             posInArray = j;
           }
         }
-        turnDR ( outputPin, newValue, outputType, posInArray ); // see swfunc.h 
+        turnDR ( outputPin, newValue, outputType, posInArray ); // see swfunc.h
         clearData (); // we're done
       }
     } else if (rc == startMarker) {
@@ -114,23 +116,22 @@ void listenSerial() {
 
 void listenPins () {
   // listen for inputs on A0 - AX and send event string via serial
-  for (int i = 0; i < iocount2; i++) {
-
-    inputVal[i] = digitalRead(inputA[i]);
+  for (int i = 0; i < iocount3; i++) {
     String serString;
+    inputVal[i] = digitalRead(inputA[i]);    
 
     // ANALOG INPUT MAPPING
-    // when using MINI, read A4 and A5 (analog only!) again 
+    // when using MINI, read A4 and A5 (analog only!) again
     // and convert them to digital HIGH/LOW values, using a threshold
     if (CMODL == 1) {
-      if  (i >= 4) {
+      if  (i >= 4 && i <= 5) {
         int aInput  = analogRead (inputA[i]) ; // temporarily store the analog input value
         int aThreshold = 700; // the HIGH/LOW treshold of the analog pin
-          if (aInput >= aThreshold) {
-            inputVal[i] = HIGH;
-          } else {
-            inputVal[i] = LOW;
-          }
+        if (aInput >= aThreshold) {
+          inputVal[i] = HIGH;
+        } else {
+          inputVal[i] = LOW;
+        }
       }
     }
 
@@ -139,7 +140,7 @@ void listenPins () {
       if (doDebounce[i] == false && isSent[i] == false) {
         doDebounce[i] = true;
         debounceMS[i] = millis();
-      }
+      }      
       if ( isSent[i] == false &&  millis() - debounceMS[i] >= debounceTime && doDebounce[i] == true) {
         debounceMS[i] = millis();
         doDebounce[i] = false;
@@ -149,7 +150,18 @@ void listenPins () {
         serString += ",1]";
         Serial.println(serString); // REPORT via serial
         btnCounter += 1;
-      }
+        if (hasKeypad) {
+          // there's is a (9 button) keypad on A1 - A9?
+          if (i >= 1 && i <= 9) {
+            for (int j = 1; j <= 6 ; j++) {
+              int shiftVal = keypadInput[j];
+              keypadInput [j - 1] = shiftVal;
+            }
+            keypadInput [6] = i;
+            checkKeypadWinning();
+          }
+        } 
+      }      
     } else if (inputVal[i] == LOW && isSent[i] == true) {
       if (doDebounce[i] == false) {
         debounceMS[i] = millis();
