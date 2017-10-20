@@ -90,11 +90,6 @@ int oldInputVal[iocount3]; // old input values for debouncing
 boolean isSent[iocount3]; // sent flags
 #endif
 
-boolean hasKeypad = false; // is there a (9 button) keypad on A1 - A9?
-int keypadWinPin = 36;    // some pin that is set to HIGH when keypad game is won
-int keypadInput[] =       {0, 0, 0, 0, 0, 0, 0}; // input array for 7 digits
-int keypadSolution[] =    {9, 6, 8, 4, 1, 5, 7}; // the input array has to look like this
-
 // button de-bounce 
 int debounceMS [iocount3]; // stores the current millis()-values for each input
 int doDebounce [iocount3]; // button input debounce flags

@@ -48,18 +48,6 @@ void clearData () {
     receivedChars[i] = (char)0;
 }
 
-void checkKeypadWinning() {
-  boolean hasWon = true; //assume player has won
-  for (int k = 0; k <= 6; k++) {
-    if (keypadInput[k] != keypadSolution[k]) {
-      hasWon = false;
-    }
-  }
-  if (hasWon) {
-    Serial.println("WON!");
-    digitalWrite (keypadWinPin, HIGH);
-  }
-}
 
 void listenSerial() {
   static boolean recvInProgress = false; // used to ignore inputs without start and end markers
@@ -150,17 +138,7 @@ void listenPins () {
         serString += ",1]";
         Serial.println(serString); // REPORT via serial
         btnCounter += 1;
-        if (hasKeypad) {
-          // there's is a (9 button) keypad on A1 - A9?
-          if (i >= 1 && i <= 9) {
-            for (int j = 1; j <= 6 ; j++) {
-              int shiftVal = keypadInput[j];
-              keypadInput [j - 1] = shiftVal;
-            }
-            keypadInput [6] = i;
-            checkKeypadWinning();
-          }
-        } 
+        
       }      
     } else if (inputVal[i] == LOW && isSent[i] == true) {
       if (doDebounce[i] == false) {
