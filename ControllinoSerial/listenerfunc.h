@@ -2,6 +2,7 @@
    Serial and pin listener functions
    debounces button/trigger inputs
 */
+
 #include <Arduino.h>
 boolean newData = false;
 int sArduPin, sPinValue, sPinDuration;  // stores incoming integers from serial connection
@@ -47,7 +48,6 @@ void clearData () {
   for ( int i = 0; i < sizeof(receivedChars);  ++i )
     receivedChars[i] = (char)0;
 }
-
 
 void listenSerial() {
   static boolean recvInProgress = false; // used to ignore inputs without start and end markers
@@ -106,7 +106,7 @@ void listenPins () {
   // listen for inputs on A0 - AX and send event string via serial
   for (int i = 0; i < iocount3; i++) {
     String serString;
-    inputVal[i] = digitalRead(inputA[i]);    
+    inputVal[i] = digitalRead(inputA[i]);
 
     // ANALOG INPUT MAPPING
     // when using MINI, read A4 and A5 (analog only!) again
@@ -128,18 +128,44 @@ void listenPins () {
       if (doDebounce[i] == false && isSent[i] == false) {
         doDebounce[i] = true;
         debounceMS[i] = millis();
-      }      
+      }
       if ( isSent[i] == false &&  millis() - debounceMS[i] >= debounceTime && doDebounce[i] == true) {
         debounceMS[i] = millis();
         doDebounce[i] = false;
         isSent[i] = true;
-        serString = "[A";
-        serString += i;
+
+        serString = "[A"; // default
+        serString += i;   // default
+
+        // MAXI
+        if (CMODL == 2) {
+          if (i == 10) {
+            serString = "[IN0";
+          }
+          if (i == 11) {
+            serString = "[IN1";
+          }
+        }
+
+        // MEGA
+        if (CMODL == 3) {
+          if (i >= 16 && i <= 18) {
+            serString = "[I";
+            serString += i;
+          }
+          if (i == 19) {
+            serString = "[IN0";
+          }
+          if (i == 20) {
+            serString = "[IN1";
+          }
+        }
+
         serString += ",1]";
         Serial.println(serString); // REPORT via serial
         btnCounter += 1;
-        
-      }      
+
+      }
     } else if (inputVal[i] == LOW && isSent[i] == true) {
       if (doDebounce[i] == false) {
         debounceMS[i] = millis();
@@ -149,8 +175,34 @@ void listenPins () {
         isSent[i] = false;
         debounceMS[i] = millis();
         doDebounce[i] = false;
-        serString = "[A";
-        serString += i;
+
+        serString = "[A"; // default
+        serString += i;   // default
+
+        // MAXI
+        if (CMODL == 2) {
+          if (i == 10) {
+            serString = "[IN0";
+          }
+          if (i == 11) {
+            serString = "[IN1";
+          }
+        }
+
+        // MEGA
+        if (CMODL == 3) {
+          if (i >= 16 && i <= 18) {
+            serString = "[I";
+            serString += i;
+          }
+          if (i == 19) {
+            serString = "[IN0";
+          }
+          if (i == 20) {
+            serString = "[IN1";
+          }
+        }
+
         serString += ",0]";
         Serial.println(serString); // REPORT via serial
       }

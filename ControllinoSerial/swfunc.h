@@ -1,6 +1,7 @@
 /*
    switch functions for controllino
 */
+
 #include <Arduino.h>
 
 // switch digital pins and relays
@@ -24,6 +25,6 @@ void turnDR ( int thePin, int newValue, int outputType, int posInArray) {
   } else {
     serString = "[ERROR]";
   }
-  Serial.println(serString);
+  Serial.println(serString); // REPORT via serial
 }
 
