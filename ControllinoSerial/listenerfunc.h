@@ -137,6 +137,16 @@ void listenPins () {
         serString = "[A"; // default
         serString += i;   // default
 
+        // MINI
+        if (CMODL == 1) {
+          if (i == 6) {
+            serString = "[IN0";
+          }
+          if (i == 7) {
+            serString = "[IN1";
+          }
+        }
+
         // MAXI
         if (CMODL == 2) {
           if (i == 10) {
@@ -178,6 +188,16 @@ void listenPins () {
 
         serString = "[A"; // default
         serString += i;   // default
+
+        // MINI
+        if (CMODL == 1) {
+          if (i == 6) {
+            serString = "[IN0";
+          }
+          if (i == 7) {
+            serString = "[IN1";
+          }
+        }
 
         // MAXI
         if (CMODL == 2) {
