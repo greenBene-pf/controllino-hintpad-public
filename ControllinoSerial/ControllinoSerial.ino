@@ -25,11 +25,12 @@
 
   latest changes:
   - v1.1: support for additional input pins on MAXI/MEGA
-  - v1.2: reports signals using IDs that are printed on the device
+  - v1.2.1: reports signals using IDs that are printed on the device
+  - v1.2.2: button debounce fix
   
 */
 
-String currentVersion = "1.2.1";
+String currentVersion = "1.2.2";
 
 #include <Controllino.h>
 
@@ -96,9 +97,9 @@ boolean isSent[iocount3]; // sent flags
 #endif
 
 // button de-bounce
-int debounceMS [iocount3]; // stores the current millis()-values for each input
+int long debounceMS [iocount3]; // stores the current millis()-values for each input
 int doDebounce [iocount3]; // button input debounce flags
-const int debounceTime = 75; // in ms
+const int debounceTime = 150; // in ms
 
 #include "swfunc.h"
 #include "listenerfunc.h"
